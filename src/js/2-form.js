@@ -1,35 +1,37 @@
 const form = document.querySelector('.feedback-form');
-const emailInput = form.elements.email;
-const messageTextarea = form.elements.message;
-
 const STORAGE_KEY = 'feedback-form-state';
 
-form.addEventListener('input', () => {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({
-      email: emailInput.value,
-      message: messageTextarea.value,
-    })
-  );
+form.addEventListener('input', event => {
+  const formData = {
+    ...(JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}),
+    [event.target.name]: event.target.value.trim(),
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 });
 
 form.addEventListener('submit', e => {
   e.preventDefault();
+  const { email, message } = e.currentTarget.elements;
+  const emailValue = email.value.trim();
+  const messageValue = message.value.trim();
+  if (emailValue === '' || messageValue === '') {
+    console.log('Error: Fill in the fields');
+    return;
+  }
 
   console.log({
-    email: emailInput.value,
-    message: messageTextarea.value,
+    email: emailValue,
+    message: messageValue,
   });
 
   localStorage.removeItem(STORAGE_KEY);
-  form.reset();
+  e.currentTarget.reset();
 });
 
 const savedFormData = localStorage.getItem(STORAGE_KEY);
 if (savedFormData) {
   const { email, message } = JSON.parse(savedFormData);
 
-  emailInput.value = email;
-  messageTextarea.value = message;
+  document.querySelector('input[name="email"]').value = email;
+  document.querySelector('textarea[name="message"]').value = message;
 }
