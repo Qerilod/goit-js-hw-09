@@ -15,7 +15,7 @@ form.addEventListener('submit', e => {
   const emailValue = email.value.trim();
   const messageValue = message.value.trim();
   if (emailValue === '' || messageValue === '') {
-    console.log('Error: Fill in the fields');
+    alert('Error: Fill in the fields');
     return;
   }
 
@@ -32,6 +32,8 @@ const savedFormData = localStorage.getItem(STORAGE_KEY);
 if (savedFormData) {
   const { email, message } = JSON.parse(savedFormData);
 
-  document.querySelector('input[name="email"]').value = email;
-  document.querySelector('textarea[name="message"]').value = message;
+  document.querySelector('input[name="email"]').value = email ? email : '';
+  document.querySelector('textarea[name="message"]').value = message
+    ? message
+    : '';
 }
